@@ -7,6 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from datetime import timedelta
+from django.db.models import Q
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
@@ -36,6 +37,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             date_time__lt=now_local
         ).update(status="Expired")
 
+        search_query = self.request.query_params.get('search')
+
         # Returns doctor availability view
         if doctor_id and date_str:
             return Appointment.objects.filter(
@@ -54,6 +57,18 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         # 
         if date_str:
             queryset = queryset.filter(date_time__date=date_str)
+
+        if search_query:
+            terms = search_query.strip().split()
+
+            query = Q()
+            for term in terms:
+                query &= (
+                    Q(patient__first_name__icontains=term) |
+                    Q(patient__last_name__icontains=term)
+                )
+
+            queryset = queryset.filter(query)
 
         return queryset.order_by('-date_time')
     

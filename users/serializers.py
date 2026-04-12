@@ -118,6 +118,7 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
 
+        # DECRYPT FIELDS
         decrypt_fields = [
             'address', 'contact_number',
         ]
