@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from datetime import timedelta
 from django.db.models import Q
+from django.shortcuts import render, get_object_or_404
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
@@ -174,3 +175,16 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         appointment.save()
         
         return Response({'status': 'appointment completed'})
+    
+def verify_slip_view(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    timeout_dt = appointment.date_time + timedelta(hours=1)
+
+    context = {
+        'appointment': appointment,
+        'full_name': f"{appointment.patient.first_name} {appointment.patient.last_name}",
+        'date': appointment.date_time.strftime('%B %d, %Y'),
+        'timeout_time': timeout_dt.strftime('%I:%M %p'), 
+    }
+    return render(request, 'appointments/verify_slip.html', context)

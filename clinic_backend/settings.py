@@ -28,6 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID') 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -41,6 +43,7 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS = [ 
     "http://localhost:3000",
     "http://localhost:8081",
+    "http://127.0.0.1:8080",
     "https://ua-clinic-appointment-system-front.vercel.app"
 ]
 
